@@ -33,7 +33,7 @@ void setup()
     pinMode(OKAY_BUTTON_PIN, INPUT_PULLUP);
 }
 
-void loop()
+void playingLoop()
 {
     if (digitalRead(MOVE_BUTTON_PIN) == LOW)
     {
@@ -45,31 +45,71 @@ void loop()
         game.placePlayer();
     }
 
-    if (game.hasWinner())
-    {
-        const Vec2i *win = game.getWin();
-        led.clearDisplay(0);
-        for (int i = 0; i < 4; i++)
-        {
-            led.setLed(0, win[i].x, win[i].y, true);
-        }
-        return;
-    }
-
-    // led.clearDisplay(0);
+    // Render player ones chips first, so they are solid
     renderBoard(led, game.getPlayer1Board());
-    // Only render player 1 as a solid dot
+    // If we are player one, render the player in both frames
     if (game.getPlayerNumber() == 0)
     {
         renderPlayer(led, game.getPlayerPosition());
     }
     delay(50);
+
+    // Frame two, render both players chips. This makes player
+    // twos chips flash.
     renderBoards(led, game.getPlayer1Board(), game.getPlayer2Board());
     renderPlayer(led, game.getPlayerPosition());
     delay(50);
 
-    // TODO: Change rendering to use timers rather than stopping the loop
-
-    // board.movePlayer(Direction::right);
     game.step();
+}
+
+void winnerLoop()
+{
+    // Handle leaving the winning screen
+    if (digitalRead(MOVE_BUTTON_PIN) == LOW ||
+        digitalRead(OKAY_BUTTON_PIN) == LOW)
+    {
+        // Slowly wipe the screen
+        for (int row = 7; row >= 0; row--)
+        {
+            led.setColumn(0, row + 2, B00000000);
+            led.setColumn(0, row + 1, row % 2 == 0 ? B01010101 : B10101010);
+            led.setColumn(0, row, B11111111);
+            delay(100);
+        }
+        game.restart();
+        return;
+    }
+
+    // Handle flashing the winning points
+    const Vec2i *win = game.getWin();
+
+    // First render all the boards as solid
+    renderBoards(led, game.getPlayer1Board(), game.getPlayer2Board());
+    // but turn off the winning line
+    for (int i = 0; i < 4; i++)
+    {
+        led.setLed(0, win[i].x, win[i].y, false);
+    }
+    delay(100);
+
+    // Now render the winning line, so it flashes
+    for (int i = 0; i < 4; i++)
+    {
+        led.setLed(0, win[i].x, win[i].y, true);
+    }
+
+    delay(100);
+}
+
+void loop()
+{
+    if (game.hasWinner())
+    {
+        winnerLoop();
+    }
+    else
+    {
+        playingLoop();
+    }
 }

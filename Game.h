@@ -34,6 +34,7 @@ public:
   const bool *getBoard() const;
 
   void step();
+  void restart();
 
   void movePlayer(Direction dir);
   void placePlayer();

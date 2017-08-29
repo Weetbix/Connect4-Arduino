@@ -92,15 +92,28 @@ Game::Game() : state(State::waitingForInput),
 
 void Game::movePlayer(Direction dir)
 {
-    if (dir == Direction::left)
-        player.x = (player.x - 1) % WIDTH;
-    if (dir == Direction::right)
-        player.x = (player.x + 1) % WIDTH;
+    if (state == State::waitingForInput)
+    {
+        if (dir == Direction::left)
+            player.x = (player.x - 1) % WIDTH;
+        if (dir == Direction::right)
+            player.x = (player.x + 1) % WIDTH;
+    }
 }
 
 void Game::placePlayer()
 {
-    state = State::Running;
+    if (state == State::waitingForInput)
+        state = State::Running;
+}
+
+void Game::restart()
+{
+    p1Board = Board();
+    p2Board = Board();
+    state = State::waitingForInput;
+    currentPlayer = 0;
+    resetPlayerPosition();
 }
 
 void Game::step()

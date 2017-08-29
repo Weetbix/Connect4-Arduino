@@ -8,6 +8,7 @@
 struct Vec2i
 {
   Vec2i() : x(0), y(0){};
+  Vec2i(int x, int y) : x(x), y(y){};
   int x;
   int y;
 };
@@ -44,6 +45,7 @@ public:
   const Board &getPlayer2Board() const { return p2Board; }
 
   const bool hasWinner() const { return state == State::Winner; }
+  Vec2i const *getWin() { return winPoints; }
 
 private:
   void updatePlayerPosition();
@@ -61,6 +63,7 @@ private:
   int currentPlayer;
   Vec2i lastMove;
   Vec2i player;
+  Vec2i winPoints[4];
   State state;
 };
 

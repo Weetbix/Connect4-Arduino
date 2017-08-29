@@ -47,8 +47,12 @@ void loop()
 
     if (game.hasWinner())
     {
+        const Vec2i *win = game.getWin();
         led.clearDisplay(0);
-        led.setRow(0, 0, B01010101);
+        for (int i = 0; i < 4; i++)
+        {
+            led.setLed(0, win[i].x, win[i].y, true);
+        }
         return;
     }
 

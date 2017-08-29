@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Game.h"
 
-bool hasWinFromPoint(const Board &board, const Vec2i &point)
+bool findWinFromPoint(const Board &board, const Vec2i &point, Vec2i *winPoints)
 {
     // Check all the patterns around the point
     // iterate from minimum extent to maximum extent, checking if we have a row of 4
@@ -10,15 +10,32 @@ bool hasWinFromPoint(const Board &board, const Vec2i &point)
     int x, y;
     for (x = point.x - 3; x < point.x + 3; x++)
     {
-        count = board.get(x, point.y) ? count + 1 : 0;
+        if (board.get(x, point.y))
+        {
+            winPoints[count] = Vec2i(x, point.y);
+            count++;
+        }
+        else
+        {
+            count = 0;
+        }
 
         if (count >= 4)
             return true;
     }
+
     count = 0;
     for (y = point.y - 3; y < point.y + 3; y++)
     {
-        count = board.get(point.x, y) ? count + 1 : 0;
+        if (board.get(point.x, y))
+        {
+            winPoints[count] = Vec2i(point.x, y);
+            count++;
+        }
+        else
+        {
+            count = 0;
+        }
 
         if (count >= 4)
             return true;
@@ -30,7 +47,15 @@ bool hasWinFromPoint(const Board &board, const Vec2i &point)
          x < point.x + 3 && y < point.y + 3;
          x++, y++)
     {
-        count = board.get(x, y) ? count + 1 : 0;
+        if (board.get(x, y))
+        {
+            winPoints[count] = Vec2i(x, y);
+            count++;
+        }
+        else
+        {
+            count = 0;
+        }
 
         if (count >= 4)
             return true;
@@ -41,7 +66,15 @@ bool hasWinFromPoint(const Board &board, const Vec2i &point)
          x > point.x - 3 && y < point.y + 3;
          x--, y++)
     {
-        count = board.get(x, y) ? count + 1 : 0;
+        if (board.get(x, y))
+        {
+            winPoints[count] = Vec2i(x, y);
+            count++;
+        }
+        else
+        {
+            count = 0;
+        }
 
         if (count >= 4)
             return true;
@@ -98,7 +131,7 @@ void Game::updatePlayerPosition()
 
         // Place the piece
         board.set(player.x, player.y, true);
-        if (hasWinFromPoint(board, player))
+        if (findWinFromPoint(board, player, winPoints))
         {
             state = State::Winner;
         }

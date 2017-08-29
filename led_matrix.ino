@@ -1,7 +1,7 @@
 #include <LedControl.h>
 #include <binary.h>
 
-#include "ConnectBoard.h"
+#include "Game.h"
 #include "LEDBoardRenderer.h"
 
 // LED matrix pins
@@ -20,7 +20,7 @@ LedControl led = LedControl(
     // One device
     1);
 
-ConnectBoard board = ConnectBoard();
+Game game = Game();
 
 void setup()
 {
@@ -37,18 +37,35 @@ void loop()
 {
     if (digitalRead(MOVE_BUTTON_PIN) == LOW)
     {
-        board.movePlayer(Direction::right);
+        game.movePlayer(Direction::right);
     }
 
     if (digitalRead(OKAY_BUTTON_PIN) == LOW)
     {
-        board.placePlayer();
+        game.placePlayer();
     }
 
-    // led.setLed(0, 0, 0, board.getState());
-    // led.setLed(0, 0, 0, true);
-    render(led, board);
+    if (game.hasWinner())
+    {
+        led.clearDisplay(0);
+        led.setRow(0, 0, B01010101);
+        return;
+    }
+
+    // led.clearDisplay(0);
+    renderBoard(led, game.getPlayer1Board());
+    // Only render player 1 as a solid dot
+    if (game.getPlayerNumber() == 0)
+    {
+        renderPlayer(led, game.getPlayerPosition());
+    }
+    delay(50);
+    renderBoards(led, game.getPlayer1Board(), game.getPlayer2Board());
+    renderPlayer(led, game.getPlayerPosition());
+    delay(50);
+
+    // TODO: Change rendering to use timers rather than stopping the loop
+
     // board.movePlayer(Direction::right);
-    board.step();
-    delay(200);
+    game.step();
 }

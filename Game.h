@@ -3,9 +3,7 @@
 #define CONNECT_BOARD_H
 
 #include "Arduino.h"
-
-const int WIDTH = 8;
-const int HEIGHT = 8;
+#include "Board.h"
 
 struct Vec2i
 {
@@ -23,13 +21,14 @@ enum Direction
 enum State
 {
   waitingForInput,
-  Running
+  Running,
+  Winner
 };
 
-class ConnectBoard
+class Game
 {
 public:
-  ConnectBoard();
+  Game();
 
   const bool *getBoard() const;
 
@@ -39,11 +38,14 @@ public:
   void placePlayer();
 
   const Vec2i &getPlayerPosition() const { return player; }
+  int getPlayerNumber() const { return currentPlayer; }
+
+  const Board &getPlayer1Board() const { return p1Board; }
+  const Board &getPlayer2Board() const { return p2Board; }
+
+  const bool hasWinner() const { return state == State::Winner; }
 
 private:
-  void set(const int &x, const int &y, const bool &val);
-  bool get(const int &x, const int &y) const;
-
   void updatePlayerPosition();
   void resetPlayerPosition();
 
@@ -53,8 +55,11 @@ private:
   const static int HEIGHT = 8;
 
   // Our board data
-  bool board[WIDTH * HEIGHT];
+  Board p1Board;
+  Board p2Board;
 
+  int currentPlayer;
+  Vec2i lastMove;
   Vec2i player;
   State state;
 };

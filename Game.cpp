@@ -2,6 +2,10 @@
 #include "Board.h"
 #include "Game.h"
 
+// Given a board and a point, will determine if there is a win condition
+// intersecting with the point. If so, winPoints will be populated with
+// the list of 4 connected points.
+// Note: Naive implementation
 bool findWinFromPoint(const Board &board, const Vec2i &point, Vec2i *winPoints)
 {
     // Check all the patterns around the point
@@ -104,7 +108,7 @@ void Game::movePlayer(Direction dir)
 void Game::placePlayer()
 {
     if (state == State::waitingForInput)
-        state = State::Running;
+        state = State::running;
 }
 
 void Game::restart()
@@ -122,7 +126,7 @@ void Game::step()
     {
     case State::waitingForInput:
         break;
-    case State::Running:
+    case State::running:
         updatePlayerPosition();
         break;
     }
@@ -136,17 +140,21 @@ void Game::resetPlayerPosition()
 
 void Game::updatePlayerPosition()
 {
+    // If the next position downwards is solid,
+    // then place the chip here.
     if (player.y == 0 ||
         p1Board.get(player.x, player.y - 1) == true ||
         p2Board.get(player.x, player.y - 1) == true)
     {
         Board &board = currentPlayer == 0 ? p1Board : p2Board;
 
-        // Place the piece
+        // Place the chip
         board.set(player.x, player.y, true);
+
+        // Check if there is a win from the last placed chip
         if (findWinFromPoint(board, player, winPoints))
         {
-            state = State::Winner;
+            state = State::winner;
         }
         else
         {
@@ -157,6 +165,7 @@ void Game::updatePlayerPosition()
     }
     else
     {
+        // otherwise keep moving the chip down
         player.y--;
     }
 }

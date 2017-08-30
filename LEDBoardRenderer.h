@@ -18,7 +18,7 @@ void renderBoard(LedControl &led, const Board &board)
         byte row = 0;
         for (int x = 0; x < 8; x++)
         {
-            // The rows and columns are backwards
+            // The rows and columns are backwards due to the mounting position
             row |= data[(y % 8) + (x * 8)] << 7 - x;
         }
         led.setRow(0, y, row);
@@ -35,7 +35,7 @@ void renderBoards(LedControl &led, const Board &board1, const Board &board2)
         byte row = 0;
         for (int x = 0; x < 8; x++)
         {
-            // The rows and columns are backwards
+            // The rows and columns are backwards due to the mounting position
             row |= (data1[(y % 8) + (x * 8)] || data2[(y % 8) + (x * 8)]) << 7 - x;
         }
         led.setRow(0, y, row);

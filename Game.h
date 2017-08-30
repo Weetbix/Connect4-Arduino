@@ -22,8 +22,8 @@ enum Direction
 enum State
 {
   waitingForInput,
-  Running,
-  Winner
+  running,
+  winner
 };
 
 class Game
@@ -31,25 +31,37 @@ class Game
 public:
   Game();
 
-  const bool *getBoard() const;
-
+  // Increment the game loop by one step
   void step();
+
+  // Reset the game
   void restart();
 
+  // Move the player left or right
   void movePlayer(Direction dir);
+
+  // Drop a chip at the current player location
   void placePlayer();
 
+  // Gets the players current position
   const Vec2i &getPlayerPosition() const { return player; }
+
+  // Gets the current player number
   int getPlayerNumber() const { return currentPlayer; }
 
   const Board &getPlayer1Board() const { return p1Board; }
   const Board &getPlayer2Board() const { return p2Board; }
 
-  const bool hasWinner() const { return state == State::Winner; }
+  // Whether or not a player has won the current game
+  const bool hasWinner() const { return state == State::winner; }
+
+  // Gets the list of winning points as an array of 4 Vec2i objects
   Vec2i const *getWin() { return winPoints; }
 
 private:
+  // Handle a player chip falling one step
   void updatePlayerPosition();
+
   void resetPlayerPosition();
 
   // Board width and height, can be made
@@ -62,10 +74,13 @@ private:
   Board p2Board;
 
   int currentPlayer;
-  Vec2i lastMove;
-  Vec2i player;
-  Vec2i winPoints[4];
   State state;
+
+  // Player position
+  Vec2i player;
+
+  // Array of the winning 4 connected points (if the game is won)
+  Vec2i winPoints[4];
 };
 
 #endif

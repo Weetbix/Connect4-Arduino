@@ -24,7 +24,7 @@ enum State
   winner
 };
 
-template <int WIDTH, int HEIGHT>
+template <int WIDTH, int HEIGHT, int NUM_PLAYERS>
 class Connect4Game
 {
 public:
@@ -50,8 +50,10 @@ public:
   // Reset the game
   void restart()
   {
-    p1Board = Board<WIDTH, HEIGHT>();
-    p2Board = Board<WIDTH, HEIGHT>();
+    for (int i = 0; i < NUM_PLAYERS; i++)
+    {
+      boards[i] = Board<WIDTH, HEIGHT>();
+    }
     state = State::waitingForInput;
     currentPlayer = 0;
     resetPlayerPosition();
@@ -82,8 +84,7 @@ public:
   // Gets the current player number
   int getPlayerNumber() const { return currentPlayer; }
 
-  const Board<WIDTH, HEIGHT> &getPlayer1Board() const { return p1Board; }
-  const Board<WIDTH, HEIGHT> &getPlayer2Board() const { return p2Board; }
+  const Board<WIDTH, HEIGHT> &getPlayerBoard(int player) const { return boards[player - 1]; }
 
   // Whether or not a player has won the current game
   const bool hasWinner() const { return state == State::winner; }
@@ -97,11 +98,19 @@ private:
   {
     // If the next position downwards is solid,
     // then place the chip here.
-    if (player.y == 0 ||
-        p1Board.get(player.x, player.y - 1) == true ||
-        p2Board.get(player.x, player.y - 1) == true)
+    bool nextPositionOccupied = false;
+    for (int i = 0; i < NUM_PLAYERS; i++)
     {
-      Board<WIDTH, HEIGHT> &board = currentPlayer == 0 ? p1Board : p2Board;
+      if (boards[i].get(player.x, player.y - 1) == true)
+      {
+        nextPositionOccupied = true;
+        break;
+      }
+    }
+
+    if (player.y == 0 || nextPositionOccupied)
+    {
+      Board<WIDTH, HEIGHT> &board = boards[currentPlayer];
 
       // Place the chip
       board.set(player.x, player.y, true);
@@ -114,7 +123,7 @@ private:
       else
       {
         resetPlayerPosition();
-        currentPlayer = (currentPlayer + 1) % 2;
+        currentPlayer = (currentPlayer + 1) % NUM_PLAYERS;
         state = State::waitingForInput;
       }
     }
@@ -218,8 +227,7 @@ private:
   }
 
   // Our board data
-  Board<WIDTH, HEIGHT> p1Board;
-  Board<WIDTH, HEIGHT> p2Board;
+  Board<WIDTH, HEIGHT> boards[NUM_PLAYERS];
 
   int currentPlayer;
   State state;

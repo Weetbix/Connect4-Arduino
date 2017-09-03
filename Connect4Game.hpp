@@ -84,7 +84,7 @@ public:
   // Gets the current player number
   int getPlayerNumber() const { return currentPlayer; }
 
-  const Board<WIDTH, HEIGHT> &getPlayerBoard(int player) const { return boards[player - 1]; }
+  const Board<WIDTH, HEIGHT> &getPlayerBoard(int player) const { return boards[player]; }
 
   // Whether or not a player has won the current game
   const bool hasWinner() const { return state == State::winner; }

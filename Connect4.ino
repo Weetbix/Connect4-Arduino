@@ -46,7 +46,7 @@ void playingLoop()
     }
 
     // Render player ones chips first, so they are solid
-    renderBoard(led, game.getPlayerBoard(1));
+    renderBoard(led, game.getPlayerBoard(0));
     // If we are player one, render the player in both frames
     if (game.getPlayerNumber() == 0)
     {
@@ -56,7 +56,7 @@ void playingLoop()
 
     // Frame two, render both players chips. This makes player
     // twos chips flash.
-    renderBoards(led, game.getPlayerBoard(1), game.getPlayerBoard(2));
+    renderBoards(led, game.getPlayerBoard(0), game.getPlayerBoard(1));
     renderPlayer(led, game.getPlayerPosition());
     delay(50);
 
@@ -85,7 +85,7 @@ void winnerLoop()
     const Vec2i *win = game.getWin();
 
     // First render all the boards as solid
-    renderBoards(led, game.getPlayerBoard(1), game.getPlayerBoard(2));
+    renderBoards(led, game.getPlayerBoard(0), game.getPlayerBoard(1));
     // but turn off the winning line
     for (int i = 0; i < 4; i++)
     {

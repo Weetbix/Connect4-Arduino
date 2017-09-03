@@ -1,8 +1,8 @@
 #include <LedControl.h>
 #include <binary.h>
 
-#include "Game.h"
-#include "LEDBoardRenderer.h"
+#include "Connect4Game.hpp"
+#include "LEDBoardRenderer.hpp"
 
 // LED matrix pins
 const int DATA_PIN = 12;
@@ -20,7 +20,7 @@ LedControl led = LedControl(
     // One device
     1);
 
-Game<8, 8> game = Game<8, 8>();
+Connect4Game<8, 8> game = Connect4Game<8, 8>();
 
 void setup()
 {

@@ -1,8 +1,8 @@
-#ifndef LED_BOARD_RENDERER_H
-#define LED_BOARD_RENDERER_H
+#ifndef LED_BOARD_RENDERER_HPP
+#define LED_BOARD_RENDERER_HPP
 
 #include <LedControl.h>
-#include "Board.h"
+#include "Board.hpp"
 
 void renderPlayer(LedControl &led, const Vec2i &pos)
 {

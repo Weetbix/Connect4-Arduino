@@ -1,6 +1,6 @@
 
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
 // Simple template class for easily
 // getting/setting boolean array values

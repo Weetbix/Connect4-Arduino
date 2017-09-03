@@ -1,9 +1,7 @@
+#ifndef CONNECT_4_GAME_HPP
+#define CONNECT_4_GAME_HPP
 
-#ifndef CONNECT_BOARD_H
-#define CONNECT_BOARD_H
-
-#include "Arduino.h"
-#include "Board.h"
+#include "Board.hpp"
 
 struct Vec2i
 {
@@ -27,11 +25,11 @@ enum State
 };
 
 template <int WIDTH, int HEIGHT>
-class Game
+class Connect4Game
 {
 public:
-  Game() : state(State::waitingForInput),
-           currentPlayer(0)
+  Connect4Game() : state(State::waitingForInput),
+                   currentPlayer(0)
   {
     resetPlayerPosition();
   }

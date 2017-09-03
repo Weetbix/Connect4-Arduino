@@ -20,7 +20,7 @@ LedControl led = LedControl(
     // One device
     1);
 
-Game game = Game();
+Game<8, 8> game = Game<8, 8>();
 
 void setup()
 {
